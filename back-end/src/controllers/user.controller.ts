@@ -14,7 +14,6 @@ export class UserController {
 
 
     @Post()
-    @UseBefore(authentication)
     @OpenAPI({summary: 'Create an user then return the created user.'})
     async createUser(@Body() userData: SignUpRequirements): Promise<IResponseType> {
 
