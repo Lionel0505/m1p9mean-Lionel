@@ -1,0 +1,9 @@
+{
+  "encryption_key": "624d9ae426624d9ae426a0624db2e1567624d624d9ae426624d9ae426a0624db2e1567624db2e156799a0cc0c9692299a0cc0c96922fd1c1d7bb7ada0f624db2e1567624db2e156799a0cc0c9692299a0cc0c96922d1c1d7bb7adb2e156799a0cc0c9692299a0cc0c96922fd1c1d7bb7ada0f624db2e1567624db2e156799a0cc0c9692299a0cc0c96922d1c1d7bb7ad",
+  "endpoints": {
+    "user": "users",
+    "session": {
+      "sign_in": "auth/sign_in"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { PageNotFoundComponent } from "../../modules/public/pages/page-not-found/page-not-found.component";
+
+
+const routes: Routes = [
+  {
+    path: '**',
+    component: PageNotFoundComponent
+  },
+  {
+    path: '#',
+    component: PageNotFoundComponent
+  },
+  {
+    path: 'restaurant',
+    component: PageNotFoundComponent
+  },
+  {
+    path: 'admin',
+    component: PageNotFoundComponent
+  },
+  {
+    path: 'delivery',
+    component: PageNotFoundComponent
+  }
+];
+
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class AdminLayoutRouting {}
