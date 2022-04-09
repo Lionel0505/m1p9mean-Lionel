@@ -5,9 +5,14 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { connectWithMongoose } from "./utils/database/database.utils";
 import { getMetadataArgsStorage, useExpressServer } from "routing-controllers";
+import { UserController } from "./controllers/user.controller";
 import { routingControllersToSpec } from "routing-controllers-openapi";
 import { validationMetadatasToSchemas } from "class-validator-jsonschema";
+import { DefaultController } from "./controllers/default.controller";
 import {errorLogger} from "./middlewares/error-logger.middleware";
+import {SessionController} from "./controllers/session.controller";
+import { OrderController } from "./controllers/order.controller";
+import { DishController } from "./controllers/dish.controller";
 
 
 const swaggerUI = require("swagger-ui-express");
@@ -31,7 +36,7 @@ class Server {
         this.port = process.env.PORT || 3200;
 
         // Setting the database connection url
-        this.databaseUri = process.env.DATABASE_URI || 'mongodb://localhost:27107/ekaly_db';
+        this.databaseUri = process.env.DATABASE_URI || 'mongodb://localhost:27107/ekaly';
 
         // Setting the middlewares
         this.setMiddlewares();
@@ -124,6 +129,11 @@ class Server {
 
 // Setting up the server with the controllers
 const server: Server = new Server([
+    DefaultController,
+    UserController,
+    SessionController,
+    OrderController,
+    DishController
 ]);
 
 
