@@ -32,7 +32,7 @@ export class SignUpRequirements {
         this.firstName = firstName;
         this.lastName = lastName;
 
-        this.type = type in E_UserType ? type : E_UserType.NOT;
+        this.type = Object.values(E_UserType).includes(type as E_UserType) ? type : E_UserType.NOT;
 
         this.emailAddress = emailAddress;
 

@@ -27,7 +27,7 @@ export class UserService {
 
         if (!isEmailValid(userData.emailAddress)) throw new Error('Incorrect email address.');
 
-        if (!(userData.type in E_UserType) || userData.type == E_UserType.NOT) throw new Error('Incorrect user type.');
+        if (!(Object.values(E_UserType).includes(userData.type as E_UserType)) || userData.type == E_UserType.NOT) throw new Error('Incorrect user type.');
 
         Object.assign(userData, { _id: String(new mongoose.mongo.ObjectId()) });
 
