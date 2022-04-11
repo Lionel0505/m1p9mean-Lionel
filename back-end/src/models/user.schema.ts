@@ -1,5 +1,5 @@
-import mongoose, { PaginateModel } from "mongoose";
 import bcrypt from "bcrypt";
+import mongoose, { PaginateModel } from "mongoose";
 import paginate from 'mongoose-paginate-v2';
 import { isEmpty } from "../utils/utils.service";
 import { E_UserType } from "../utils/static.enums";
@@ -7,7 +7,7 @@ import { E_UserType } from "../utils/static.enums";
 
 export interface IUser extends mongoose.Document{
 
-    firstName: string;
+    firstName?: string;
 
     lastName: string;
 
@@ -29,8 +29,7 @@ const UserSchema = new mongoose.Schema(
             required: true
         },
         firstName: {
-            type: String,
-            required: true
+            type: String
         },
         lastName: {
             type: String,

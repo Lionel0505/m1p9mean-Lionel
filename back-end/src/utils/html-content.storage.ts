@@ -1,3 +1,30 @@
+import { IUser } from "../models/user.schema";
+
+
+export const getDefaultPwdEmailFormat = (user: IUser, password: string): string => {
+
+    return `
+
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Mot de passe E-Kaly</title>
+    </head>
+    <body>
+    
+        <h1>Mot de passe E-Kaly</h1>
+        <p>Voici votre mot de passe pour le compte ${ user.lastName } ${ user.firstName + ' ' || '' }- ${ user.emailAddress }</p>
+        <h3><strong>${ password }</strong></h3>
+    
+    </body>
+    </html>
+
+    `;
+
+};
+
+
 export const landingPage = (baseUrl: string) => {
 
     return `
@@ -145,7 +172,7 @@ export const landingPage = (baseUrl: string) => {
         <h2 class="background double"><span>E-KALY API WORKS FINE!</span></h2>
     
         <div class="theme_btn">
-            <a href="${baseUrl}/api-docs" class="btn btn--border btn--primary btn--animated">See documentation</a>
+            <a href="${ baseUrl }/api-docs" class="btn btn--border btn--primary btn--animated">See documentation</a>
         </div>
         
     </body>

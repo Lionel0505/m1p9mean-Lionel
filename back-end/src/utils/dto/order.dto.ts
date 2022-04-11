@@ -1,20 +1,28 @@
-import {ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested} from "class-validator";
-import {Type} from "class-transformer";
-import {isEmpty} from "../utils.service";
+import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { isEmpty } from "../utils.service";
+
 
 export class OrderDto {
 
-    constructor(shippingCost: number, status: string, deliveryMan: string, dishes: string[], customer?: string) {
+    constructor(cost: number, shippingCost: number, status: string, restaurant: string, dishes: { dish: string, quantity: number }[], customer: string, deliveryAddress: string, deliveryMan?: string) {
 
+        this.cost = cost;
         this.shippingCost = shippingCost;
         this.status = status;
-        this.deliveryMan = deliveryMan;
+        this.restaurant = restaurant;
         this.dishes = dishes;
+        this.customer = customer;
+        this.deliveryAddress = deliveryAddress;
 
-        if (!isEmpty(customer)) this.customer = customer;
+        if (!isEmpty(deliveryMan)) this.deliveryMan = deliveryMan;
+
 
     }
 
+
+    @IsNumber()
+    @IsNotEmpty()
+    cost: number;
 
     @IsNumber()
     @IsNotEmpty()
@@ -25,17 +33,23 @@ export class OrderDto {
     status: string;
 
     @IsString()
-    @IsOptional()
-    customer?: string;
+    @IsNotEmpty()
+    deliveryAddress: string;
 
     @IsString()
     @IsNotEmpty()
-    deliveryMan: string;
+    customer: string;
+
+    @IsString()
+    @IsOptional()
+    deliveryMan?: string;
+
+    @IsString()
+    @IsNotEmpty()
+    restaurant: string;
 
     @IsArray()
     @ArrayMinSize(1)
-    @ValidateNested({each: true})
-    @Type(() => String)
-    dishes: string[];
+    dishes: { dish: string, quantity: number }[];
 
 }

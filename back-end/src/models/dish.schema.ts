@@ -71,8 +71,9 @@ const DishSchema = new mongoose.Schema(
             default: true
         },
         restaurant: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            type: String,
+            ref: 'User',
+            required: true
         }
     },
     {

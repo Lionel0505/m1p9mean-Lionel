@@ -28,4 +28,7 @@ export enum E_DeliveryStatus {
     // commande en préparation
     INI = 'initiated',
 
+    // commande annulée
+    CAN = 'canceled',
+
 }

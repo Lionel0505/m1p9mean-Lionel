@@ -1,14 +1,101 @@
 import 'dotenv/config';
-import validator from "validator";
-import jsonwebtoken from "jsonwebtoken";
-import {IResponseType, ITokenData} from "./api-models/global.type";
+import validator from 'validator';
+import jsonwebtoken from 'jsonwebtoken';
 import * as CryptoJS from 'crypto-js';
+// import constants from 'config/constants.config.json';
+import {IResponseType, ITokenData} from "./api-models/global.type";
 import {IUserRequest} from "./api-models/request.type";
 
 
 const ENCRYPTION_KEY: string = process.env.ENCRYPTION_KEY || '624d9ae426624d9ae426a0624db2e1567624d624d9ae426624d9ae426a0624db2e1567624db';
 
 const SECRET_KEY: string = process.env.SECRET_KEY || 'secret-key';
+
+const nodemailer = require('nodemailer');
+
+const constants = require('./config/constants.config.json');
+
+const generator = require('generate-password');
+
+export const customLabels: () => any = (): any => {
+
+    return constants.custom_labels;
+
+}
+
+
+export const generatePassword: () => string = (): string => {
+
+    const options = constants.password_options;
+
+    return generator.generate(options);
+
+};
+
+
+export const sendEmail: (recipients: string | string[], topic: string, message: string, isHtml: boolean, cc?: string | string[], bcc?: string | string[], attachments?: any) => Promise<boolean> = async (recipients: string | string[], topic: string, message: string, isHtml: boolean, cc?: string | string[], bcc?: string | string[], attachments?: any): Promise<boolean> => {
+
+    const transporter = nodemailer.createTransport(constants.nodemailer_options);
+
+    let mailOptions = {
+        from: constants.nodemailer_options.auth.user,
+        to: recipients,
+        subject: topic
+    };
+
+    if (isHtml) {
+
+        mailOptions = Object.assign(mailOptions, { html: message });
+
+    } else {
+
+        mailOptions = Object.assign(mailOptions, { text: message });
+
+    }
+
+    if (!isEmpty(cc)) {
+
+    mailOptions = Object.assign(mailOptions, {cc: cc});
+
+}
+
+if (!isEmpty(bcc)) {
+
+    mailOptions = Object.assign(mailOptions, {bcc: bcc});
+
+}
+
+if (!isEmpty(attachments)) {
+
+    mailOptions = Object.assign(mailOptions, {attachments: attachments});
+
+}
+
+console.log(mailOptions)
+
+return new Promise((resolve, reject) => {
+
+    transporter.sendMail(mailOptions, function (error: any, info: any) {
+
+        if (error) {
+
+            console.log("Email error: ", error);
+
+            reject(error);
+
+        } else {
+
+            const result: string = 'Email sent: ' + info.response;
+            console.log(result);
+            resolve(true);
+
+        }
+
+    });
+
+});
+
+}
 
 
 export const retrieveToken: (req: IUserRequest) => string = (req: IUserRequest): string => {

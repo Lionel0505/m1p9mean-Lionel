@@ -27,22 +27,20 @@ export class SignInRequirements {
 
 export class SignUpRequirements {
 
-    constructor(firstName: IUser["firstName"], lastName: IUser["lastName"], type: IUser["type"], emailAddress: IUser["emailAddress"], password?: IUser["password"]) {
+    constructor(lastName: IUser["lastName"], type: IUser["type"], emailAddress: IUser["emailAddress"], firstName?: IUser["firstName"], password?: IUser["password"]) {
 
-        this.firstName = firstName;
         this.lastName = lastName;
-
         this.type = Object.values(E_UserType).includes(type as E_UserType) ? type : E_UserType.NOT;
-
         this.emailAddress = emailAddress;
 
+        if (!isEmpty(firstName)) this.firstName = firstName;
         if (!isEmpty(password)) this.password = password;
 
     }
 
     @IsString()
-    @IsNotEmpty()
-    firstName: IUser['firstName'];
+    @IsOptional()
+    firstName?: IUser['firstName'];
 
     @IsString()
     @IsNotEmpty()

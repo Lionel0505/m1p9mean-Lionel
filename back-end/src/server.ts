@@ -9,7 +9,6 @@ import { UserController } from "./controllers/user.controller";
 import { routingControllersToSpec } from "routing-controllers-openapi";
 import { validationMetadatasToSchemas } from "class-validator-jsonschema";
 import { DefaultController } from "./controllers/default.controller";
-import {errorLogger} from "./middlewares/error-logger.middleware";
 import {SessionController} from "./controllers/session.controller";
 import { OrderController } from "./controllers/order.controller";
 import { DishController } from "./controllers/dish.controller";
@@ -36,7 +35,7 @@ class Server {
         this.port = process.env.PORT || 3200;
 
         // Setting the database connection url
-        this.databaseUri = process.env.DATABASE_URI || 'mongodb://localhost:27107/ekaly';
+        this.databaseUri = process.env.DATABASE_URI || 'mongodb://localhost:27107/ekaly_db';
 
         // Setting the middlewares
         this.setMiddlewares();
@@ -84,7 +83,6 @@ class Server {
         this.app.use(express.urlencoded({ extended: false, limit: 1024 * 1024 * 10 }));
         this.app.use(cors({ origin: '*' }));
 
-        this.app.use(errorLogger);
     }
 
 

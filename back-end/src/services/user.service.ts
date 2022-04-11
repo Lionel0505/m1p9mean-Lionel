@@ -1,8 +1,9 @@
-import mongoose, {PaginateResult} from "mongoose";
-import User, {IUser} from '../models/user.schema';
-import {isEmailValid, isEmpty} from "../utils/utils.service";
-import {SignUpRequirements} from "../utils/dto/user.dto";
-import {E_UserType} from "../utils/static.enums";
+import mongoose, { PaginateResult } from "mongoose";
+import User, { IUser } from '../models/user.schema';
+import Order from '../models/order.schema';
+import { customLabels, isEmailValid, isEmpty } from "../utils/utils.service";
+import { SignUpRequirements } from "../utils/dto/user.dto";
+import { E_DeliveryStatus, E_UserType } from "../utils/static.enums";
 
 
 export class UserService {
@@ -35,7 +36,7 @@ export class UserService {
 
         await createdUser.save();
 
-        return await this.findUserById(String(createdUser._id!));
+        return await this.findUserById(createdUser._id);
 
     }
 
@@ -80,6 +81,21 @@ export class UserService {
     }
 
 
+    public async findDeliveryMen(): Promise<IUser[]> {
+
+        const nonAvailableOnes: string[] = await Order
+            .find({ deliveryMan: { $exists: true }, status: { $in: [E_DeliveryStatus.TOD, E_DeliveryStatus.INI] } })
+            .distinct('deliveryMan')
+            .lean();
+
+        return await User
+            .find({_id: { $not: { $in: nonAvailableOnes } }, type: E_UserType.DEM})
+            .select('-password')
+            .lean();
+
+    }
+
+
     public async findUsers(query: any, options: any): Promise<PaginateResult<IUser>> {
 
         query = isEmpty(query) ? {} : query;
@@ -87,7 +103,8 @@ export class UserService {
         options = Object.assign(isEmpty(options) ? {} : options, {
             select: '-password',
             lean: true,
-            allowDiskUse: true
+            allowDiskUse: true,
+            customLabels: customLabels()
         });
 
         return await User

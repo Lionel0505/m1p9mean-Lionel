@@ -1,21 +1,20 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { isEmpty } from "../utils.service";
 
 
 export class DishDto {
 
 
-    constructor(name: string, purchasePrice: number, costPrice: number, salePrice: number, visible: boolean, picture: string, restaurant: string) {
+    constructor(name: string, purchasePrice: number, costPrice: number, salePrice: number, visible: boolean, restaurant: string, picture?: string) {
 
         this.name = name;
         this.purchasePrice = purchasePrice;
         this.costPrice = costPrice;
         this.salePrice = salePrice;
         this.visible = visible;
+        this.restaurant = restaurant;
 
         if (isEmpty(picture)) this.picture = picture;
-
-        if (isEmpty(restaurant)) this.restaurant = restaurant;
 
     }
 
@@ -28,24 +27,24 @@ export class DishDto {
     @IsOptional()
     picture?: string;
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     purchasePrice: number;
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     costPrice: number;
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     salePrice: number;
 
-    @IsString()
+    @IsBoolean()
     @IsNotEmpty()
     visible: boolean;
 
     @IsString()
-    @IsOptional()
-    restaurant?: string;
+    @IsNotEmpty()
+    restaurant: string;
 
 }

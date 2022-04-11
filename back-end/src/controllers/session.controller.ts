@@ -1,11 +1,14 @@
-import {Body, JsonController, Post, QueryParam, Req, UseBefore} from "routing-controllers";
+import { Body, Get, JsonController, Post, Req, UseBefore } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
-import { SignInRequirements } from "../utils/dto/user.dto";
-import {IResponseType, ISignInResponse, ITokenData} from "../utils/api-models/global.type";
-import {formatResponse, retrieveTokenData} from "../utils/utils.service";
+import { SignInRequirements, SignUpRequirements } from "../utils/dto/user.dto";
+import { IResponseType, ISignInResponse } from "../utils/api-models/global.type";
+import { formatResponse } from "../utils/utils.service";
 import { SessionService } from "../services/session.service";
-import {IUserRequest} from "../utils/api-models/request.type";
-import {authentication} from "../middlewares/authentication.middleware";
+import { IUserRequest } from "../utils/api-models/request.type";
+import { authentication } from "../middlewares/authentication.middleware";
+import { UserService } from "../services/user.service";
+import { validationMiddleware } from "../middlewares/validation.middleware";
+import { DishDto } from "../utils/dto/dish.dto";
 
 
 @JsonController('/auth')
@@ -13,9 +16,37 @@ export class SessionController {
 
     private sessionService: SessionService = new SessionService();
 
+    private userService: UserService = new UserService();
+
+
+    @Post('/sign_up')
+    @UseBefore(validationMiddleware(SignUpRequirements, 'body', true))
+    @OpenAPI({summary: 'Create an user then return the created user.'})
+    async createUser(@Body() userData: SignUpRequirements): Promise<IResponseType> {
+
+        try {
+
+            const user = await this.userService.createUser(userData);
+
+            const tokenData: ISignInResponse = await this.sessionService.signIn({
+                emailAddress: user.emailAddress,
+                password: userData.password
+            });
+
+            return await formatResponse(200, 'Sign up - success', tokenData);
+
+        } catch (error: any) {
+
+            return {status: 409, message: error.message};
+
+        }
+
+    }
+
 
     @Post('/sign_in')
-    @OpenAPI({ summary: 'Create an user then return the created user.' })
+    @UseBefore(validationMiddleware(SignInRequirements, 'body', true))
+    @OpenAPI({summary: 'Return token and user type for url management.'})
     async signIn(@Body() signInData: SignInRequirements): Promise<IResponseType> {
 
         try {
@@ -26,31 +57,28 @@ export class SessionController {
 
         } catch (error: any) {
 
-            return { status: 409, message: String(error) };
+            return {status: 409, message: String(error)};
 
         }
 
     }
 
 
-    @Post('/sign_out')
+    @Get('/logged_in_user')
     @UseBefore(authentication)
-    @OpenAPI({ summary: 'Create an user then return the created user.' })
-    async signOut(@Req() request: IUserRequest): Promise<IResponseType> {
+    @OpenAPI({summary: 'Return logged in user'})
+    async getLoggedInUser(@Req() request: IUserRequest): Promise<IResponseType> {
 
         try {
 
-            const responseData: boolean = await this.sessionService.signOut(request);
-
-            return await formatResponse(200, 'User created', responseData);
+            return await formatResponse(200, 'User created', request.user);
 
         } catch (error: any) {
 
-            return { status: false, message: String(error) };
+            return {status: 409, message: String(error)};
 
         }
 
     }
-
 
 }

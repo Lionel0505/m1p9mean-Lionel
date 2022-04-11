@@ -1,8 +1,6 @@
 import mongoose, { PaginateResult } from "mongoose";
-import { isEmpty, retrieveTokenData } from "../utils/utils.service";
+import { customLabels, isEmpty } from "../utils/utils.service";
 import { IUserRequest } from "../utils/api-models/request.type";
-import { OrderDto } from "../utils/dto/order.dto";
-import { ITokenData } from "../utils/api-models/global.type";
 import Dish, { IDish } from "../models/dish.schema";
 import { DishDto } from "../utils/dto/dish.dto";
 
@@ -15,9 +13,9 @@ export class DishService {
         query = isEmpty(query) ? {} : query;
 
         options = Object.assign(isEmpty(options) ? {} : options, {
-            select: '-password',
             lean: true,
-            allowDiskUse: true
+            allowDiskUse: true,
+            customLabels: customLabels()
         });
 
         return await Dish
@@ -44,10 +42,12 @@ export class DishService {
 
         if (isEmpty(dishData)) throw new Error('Please fill all the inputs?');
 
-        const tokenData: ITokenData = await retrieveTokenData(request);
+        if (isEmpty(request.user)) throw new Error('No restaurant found');
+
+        if (request.user._id != dishData.restaurant) throw new Error('Session mismatch!');
 
         Object.assign(dishData, {
-            customer: tokenData.user_id!,
+            restaurant: request.user._id,
             _id: String(new mongoose.mongo.ObjectId())
         });
 
@@ -68,5 +68,30 @@ export class DishService {
 
     }
 
+
+    public async updateDish(dishID: string, dishData: DishDto, request: IUserRequest): Promise<IDish> {
+
+        if (isEmpty(dishID)) throw new Error('No ID found');
+
+        if (isEmpty(dishData)) throw new Error('No updated data found');
+
+        if (isEmpty(request.user)) throw new Error('No restaurant found');
+
+        if (request.user._id != dishData.restaurant) throw new Error('Session mismatch!');
+
+        const currentDish: IDish | null = await Dish.findById(dishID);
+
+        if (isEmpty(currentDish)) throw new Error('No user found');
+
+        currentDish!.name = dishData.name;
+        currentDish!.costPrice = dishData.costPrice;
+        currentDish!.salePrice = dishData.salePrice;
+        currentDish!.purchasePrice = dishData.purchasePrice;
+
+        await currentDish!.save();
+
+        return await this.findDishById(dishID);
+
+    }
 
 }
