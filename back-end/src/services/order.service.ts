@@ -2,7 +2,7 @@ import mongoose, { PaginateResult } from "mongoose";
 import Order, { IOrder } from "../models/order.schema";
 import Dish, { IDish } from "../models/dish.schema";
 import User, { IUser } from '../models/user.schema';
-import { customLabels, isEmpty } from "../utils/utils.service";
+import { customLabels, groupBy, isEmpty } from "../utils/utils.service";
 import { IUserRequest } from "../utils/api-models/request.type";
 import { OrderDto } from "../utils/dto/order.dto";
 import { UserService } from "./user.service";
@@ -23,7 +23,7 @@ export class OrderService {
             status: E_DeliveryStatus.DEL
         };
 
-        const result = {};
+        let result: any;
 
         if (!isEmpty(filterData.restaurant)) {
 
@@ -41,15 +41,53 @@ export class OrderService {
 
         }
 
-        const orders = await Order
+        let orders: IOrder[] = await Order
             .find({...query})
             .skip((filterData.page - 1) * filterData.limit)
             .limit(filterData.limit)
+            .populate([
+                {
+                    path: 'dishes.dish',
+                    model: Dish
+                },
+                {
+                    path: 'restaurant',
+                    model: User
+                }
+            ])
             .lean();
 
-        orders = orders.map()
+        result = orders
+            .map((order: IOrder) => {
 
-        return result;
+                const date: string = [
+                    order.updatedAt.getFullYear(),
+                    order.updatedAt.getMonth() + 1,
+                    order.updatedAt.getDate(),
+                ].join('-');
+
+                return {...order, updatedAt: date, restaurant: order.restaurant.lastName};
+
+            });
+
+        const groupedByDate = groupBy(result, 'updatedAt');
+
+        let groupedByRestaurant: any[] = [];
+
+        let groupedByDateAndRestaurant: any = {};
+
+        let i = 0;
+
+        for (const value of Object.values(groupedByDate)) {
+
+            groupedByRestaurant[i] = groupBy(value, 'restaurant');
+            i++;
+
+        }
+
+        i = 0;
+
+        return groupedByRestaurant;
 
     }
 

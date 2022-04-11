@@ -2,9 +2,10 @@ import 'dotenv/config';
 import validator from 'validator';
 import jsonwebtoken from 'jsonwebtoken';
 import * as CryptoJS from 'crypto-js';
-// import constants from 'config/constants.config.json';
-import {IResponseType, ITokenData} from "./api-models/global.type";
-import {IUserRequest} from "./api-models/request.type";
+import { IResponseType, ITokenData } from "./api-models/global.type";
+import { IUserRequest } from "./api-models/request.type";
+import * as _ from "lodash";
+import { constants } from "./config/constants.config";
 
 
 const ENCRYPTION_KEY: string = process.env.ENCRYPTION_KEY || '624d9ae426624d9ae426a0624db2e1567624d624d9ae426624d9ae426a0624db2e1567624db';
@@ -13,9 +14,27 @@ const SECRET_KEY: string = process.env.SECRET_KEY || 'secret-key';
 
 const nodemailer = require('nodemailer');
 
-const constants = require('./config/constants.config.json');
-
 const generator = require('generate-password');
+
+export const groupByKey = (list: any, key: any, {omitKey = false}) =>
+    list.reduce(
+        (hash: any, {[key]: value, ...rest}) =>
+            ({
+                ...hash,
+                [value]: (hash[value] || []).concat(omitKey ? {...rest} : {[key]: value, ...rest})
+            }),
+        {}
+    );
+
+
+export const groupBy = (list: any, key: string) => {
+
+    return _.mapValues(
+        _.groupBy(list, key),
+        (result: any) => result.map((car: any) => _.omit(car, key))
+    );
+
+};
 
 export const customLabels: () => any = (): any => {
 
@@ -45,55 +64,55 @@ export const sendEmail: (recipients: string | string[], topic: string, message: 
 
     if (isHtml) {
 
-        mailOptions = Object.assign(mailOptions, { html: message });
+        mailOptions = Object.assign(mailOptions, {html: message});
 
     } else {
 
-        mailOptions = Object.assign(mailOptions, { text: message });
+        mailOptions = Object.assign(mailOptions, {text: message});
 
     }
 
     if (!isEmpty(cc)) {
 
-    mailOptions = Object.assign(mailOptions, {cc: cc});
+        mailOptions = Object.assign(mailOptions, {cc: cc});
 
-}
+    }
 
-if (!isEmpty(bcc)) {
+    if (!isEmpty(bcc)) {
 
-    mailOptions = Object.assign(mailOptions, {bcc: bcc});
+        mailOptions = Object.assign(mailOptions, {bcc: bcc});
 
-}
+    }
 
-if (!isEmpty(attachments)) {
+    if (!isEmpty(attachments)) {
 
-    mailOptions = Object.assign(mailOptions, {attachments: attachments});
+        mailOptions = Object.assign(mailOptions, {attachments: attachments});
 
-}
+    }
 
-console.log(mailOptions)
+    console.log(mailOptions)
 
-return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
-    transporter.sendMail(mailOptions, function (error: any, info: any) {
+        transporter.sendMail(mailOptions, function (error: any, info: any) {
 
-        if (error) {
+            if (error) {
 
-            console.log("Email error: ", error);
+                console.log("Email error: ", error);
 
-            reject(error);
+                reject(error);
 
-        } else {
+            } else {
 
-            const result: string = 'Email sent: ' + info.response;
-            console.log(result);
-            resolve(true);
+                const result: string = 'Email sent: ' + info.response;
+                console.log(result);
+                resolve(true);
 
-        }
+            }
+
+        });
 
     });
-
-});
 
 }
 
@@ -168,9 +187,9 @@ export const verifyToken: (token: string) => Promise<ITokenData> = async (token:
 
 export const formatResponse = async (status: number, message?: string, data?: any): Promise<IResponseType> => {
 
-    const response: IResponseType = { message: isEmpty(message) ? 'Data found' : message!, status: status };
+    const response: IResponseType = {message: isEmpty(message) ? 'Data found' : message!, status: status};
 
-    if (!isEmpty(data)) Object.assign(response, { data: data! });
+    if (!isEmpty(data)) Object.assign(response, {data: data!});
 
     return response;
 

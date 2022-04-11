@@ -15,7 +15,9 @@ export interface IOrder extends mongoose.Document {
 
     status: E_DeliveryStatus;
 
-    createdAt: Date | string;
+    createdAt: Date;
+
+    updatedAt: Date;
 
     customer: IUser;
 

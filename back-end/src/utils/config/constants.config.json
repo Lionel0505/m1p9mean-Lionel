@@ -18,13 +18,13 @@
     },
     "tls": {
       "rejectUnAuthorized": true
-    },
-    "password_options": {
-      "length": 8,
-      "numbers": true,
-      "symbols": true,
-      "strict": true,
-      "exclude": "~{[|`\\^]}¤²<>"
     }
+  },
+  "password_options": {
+    "length": 8,
+    "numbers": true,
+    "symbols": true,
+    "strict": true,
+    "exclude": "~{[|`\\^]}¤²<>"
   }
 }
