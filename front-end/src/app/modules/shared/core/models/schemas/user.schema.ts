@@ -1,10 +1,13 @@
-export interface IUser {
+import { BaseSchema } from "./base.schema";
 
-  _id: string;
 
-  firstName: string;
+export interface IUser extends BaseSchema {
+
+  firstName?: string;
 
   lastName: string;
+
+  type: string;
 
   emailAddress: string;
 

@@ -10,8 +10,12 @@ import { ComponentsModule } from "./components/components.module";
 import { PublicModule } from "./modules/public/public.module";
 import { AdminLayoutModule } from "./layouts/admin-layout/admin-layout.module";
 import { DeliveryManModule } from "./modules/delivery-man/delivery-man.module";
-import { CustomerModule } from "./modules/customer/customer.module";
 import { AdministratorModule } from "./modules/administrator/administrator.module";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { SharedModule } from "./modules/shared/shared.module";
+import { CustomerModule } from "./modules/customer/customer.module";
+import { RestaurantModule } from "./modules/restaurant/restaurant.module";
+import { MatNativeDateModule } from "@angular/material/core";
 
 
 @NgModule({
@@ -26,11 +30,15 @@ import { AdministratorModule } from "./modules/administrator/administrator.modul
     ReactiveFormsModule,
     HttpClientModule,
     ComponentsModule,
+    FontAwesomeModule,
     PublicModule,
     AdminLayoutModule,
     DeliveryManModule,
+    SharedModule,
     CustomerModule,
     AdministratorModule,
+    RestaurantModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
-
-declare const $: any;
+import { SessionService } from "../../modules/shared/core/services/session/session.service";
+import { IconDefinition, faCartFlatbed, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { NotificationService } from "../../modules/shared/core/services/notification/notification.service";
 
 
 @Component({
@@ -11,7 +11,15 @@ declare const $: any;
 })
 export class SidebarComponent implements OnInit {
 
-  constructor() {
+  faCartFlatbed: IconDefinition = faCartFlatbed;
+
+  faRightFromBracket: IconDefinition = faRightFromBracket;
+
+
+  constructor(
+    public sessionService: SessionService,
+    private notificationService: NotificationService
+  ) {
   }
 
 
@@ -19,14 +27,29 @@ export class SidebarComponent implements OnInit {
 
   }
 
+
+  signOut(): void {
+
+    this.sessionService.signOut().subscribe((status) => {
+
+      if (status) this.notificationService.alert('Sign out', 'Successful!', 'success');
+
+    });
+
+  }
+
+
   toggleSidebar(): void {
 
-    $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
+    document.querySelector('body')!.classList.toggle("sidebar-toggled");
 
-    if ($(".sidebar").hasClass("toggled")) {
+    const sidebar = document.querySelector('.sidebar');
 
-      $('.sidebar .collapse').collapse('hide');
+    sidebar!.classList.toggle("toggled");
+
+    if (sidebar!.classList.contains("toggled")) {
+
+      document.querySelector('.sidebar')!.classList.toggle('hidden');
 
     }
 

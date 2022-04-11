@@ -2,9 +2,9 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="javascript:void(0)">
     <div class="sidebar-brand-icon rotate-n-15">
-      <i class="fas fa-laugh-wink"></i>
+      <fa-icon [icon]="faCartFlatbed" class="fa-2x"></fa-icon>
     </div>
     <div class="sidebar-brand-text mx-3">E-Kaly</div>
   </a>
@@ -12,11 +12,23 @@
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
 
-  <!-- Nav Item - Charts -->
+  <!-- Nav Items -->
+  <li class="nav-item" *ngFor="let route of sessionService.defaultRoutes">
+    <a class="nav-link" [routerLink]="[route.path]" routerLinkActive="active">
+      <fa-icon [icon]="route.icon" style="margin-right: 0.25rem;"></fa-icon>
+      <span>{{route.title}}</span>
+    </a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Sign out -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Charts</span></a>
+    <a class="nav-link sign-out-bg" href="javascript:void(0)" (click)="signOut()">
+      <fa-icon [icon]="faRightFromBracket" style="margin-right: 0.25rem;"></fa-icon>
+      <span>Sign out</span>
+    </a>
   </li>
 
   <!-- Divider -->

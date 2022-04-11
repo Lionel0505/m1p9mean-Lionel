@@ -1,0 +1,52 @@
+<h4 mat-dialog-title>
+  {{data.title}}
+</h4>
+
+<hr>
+
+<mat-dialog-content [formGroup]="orderForm">
+
+  <div class="form-group" *ngFor="let item of dishes.value">
+
+    <div class="input-group mb-3">
+      <span class="input-group-text">{{item.dish.name}}</span>
+      <input type="text" value="{{item.quantity}}" min="1" max="10" class="form-control" readonly>
+      <span class="input-group-text" (click)="addQuantity(1, item)">
+        <fa-icon [icon]="faPlus"></fa-icon>
+      </span>
+      <span class="input-group-text" (click)="addQuantity(-1, item)">
+        <fa-icon [icon]="faMinus"></fa-icon>
+      </span>
+    </div>
+    <input type="text" class="form-control form-control-user"
+           value="{{item.dish.purchasePrice * item.quantity}}" readonly>
+    <small>Make sure you put numbers</small>
+  </div>
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Delivery address" formControlName="deliveryAddress" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Cost" formControlName="cost" value="{{cost}}" readonly>
+  </div>
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Shipping cost" value="{{shippingCost}}" formControlName="shippingCost" readonly>
+  </div>
+
+</mat-dialog-content>
+
+<hr>
+
+<mat-dialog-actions>
+  <button class="btn btn-success btn-block" (click)="submit()">
+    Save
+  </button>
+  <button class="btn btn-dark btn-block" (click)="close()">
+    cancel
+  </button>
+</mat-dialog-actions>

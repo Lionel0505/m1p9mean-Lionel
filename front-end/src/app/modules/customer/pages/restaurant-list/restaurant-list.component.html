@@ -1,0 +1,37 @@
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Available restaurants</h1>
+</div>
+
+<div class="row">
+
+  <div class="col-xl-3 col-md-6 mb-4" *ngFor="let restaurant of userService.users.value" (click)="goToMenuItems(restaurant._id)" style="cursor: pointer">
+
+    <div class="card border-left-primary shadow h-100 py-2">
+
+      <div class="card-body">
+
+        <div class="row no-gutters align-items-center">
+
+          <div class="col mr-2">
+
+            <div class="h5 mb-0 font-weight-bold text-gray-800">{{restaurant.lastName}}</div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<app-paginator
+  [length]="paginationService.paginationData.value.totalItems"
+  [pageSize]="paginationService.paginationData.value.limit"
+  [pageIndex]="paginationService.paginationData.value.page - 1"
+  (page)="setPage($event)"
+></app-paginator>

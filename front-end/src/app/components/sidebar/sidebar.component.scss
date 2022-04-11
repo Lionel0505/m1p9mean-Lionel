@@ -7,7 +7,15 @@ span {
 }
 
 .active {
-  background-color: cadetblue;
+  background-color: lighten(#4e73df, 10);
+}
+
+.sign-out-bg {
+
+  background: darken(#4e73df, 30);
+  border-radius: 20px;
+  font-weight: bolder;
+
 }
 
 .c-sidebar-nav li :hover {

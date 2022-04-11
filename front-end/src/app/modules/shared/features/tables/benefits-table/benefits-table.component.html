@@ -1,0 +1,90 @@
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">{{title}}</h1>
+</div>
+
+<div class="card shadow mb-4">
+
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">{{title}} table</h6>
+  </div>
+
+  <div class="card-body">
+
+    <div class="row">
+
+      <div class="col">
+
+        <mat-form-field appearance="standard">
+          <mat-label>Favorite food</mat-label>
+          <mat-select (selectionChange)="onRestaurantSelected($event)">
+            <mat-option [value]="null">All</mat-option>
+            <mat-option *ngFor="let restaurant of userService.users.value" [value]="restaurant._id">
+              {{restaurant.lastName}} - {{restaurant.emailAddress}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <div class="col">
+
+        <mat-form-field appearance="standard">
+
+          <mat-label>Enter a date range</mat-label>
+
+          <mat-date-range-input [rangePicker]="rangePicker">
+            <input matStartDate placeholder="Start date" (dateChange)="onDateStartChange($event, true)">
+            <input matEndDate placeholder="End date" (dateChange)="onDateStartChange($event, false)">
+          </mat-date-range-input>
+
+          <mat-hint class="d-none">MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+
+          <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+
+          <mat-date-range-picker #rangePicker>
+            <mat-date-range-picker-actions>
+              <button class="btn btn-dark btn-sm" matDateRangePickerCancel>Cancel</button>
+              <button class="btn btn-primary btn-sm" (click)="onDateSelected()" matDateRangePickerApply>Apply</button>
+            </mat-date-range-picker-actions>
+          </mat-date-range-picker>
+
+        </mat-form-field>
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+        <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+        </thead>
+
+        <tfoot>
+        <tr>
+          <th>Name</th>
+        </tr>
+        </tfoot>
+
+        <tbody>
+
+        </tbody>
+
+      </table>
+    </div>
+
+    <app-paginator
+      [length]="paginationService.paginationData.value.totalItems"
+      [pageSize]="paginationService.paginationData.value.limit"
+      [pageIndex]="paginationService.paginationData.value.page - 1"
+      (page)="setPage($event)"
+    ></app-paginator>
+
+  </div>
+</div>

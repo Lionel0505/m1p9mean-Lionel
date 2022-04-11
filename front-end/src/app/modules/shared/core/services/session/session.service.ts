@@ -1,24 +1,60 @@
 import apiConfig from '../../../../../../assets/api.config.json';
+import constants from '../../config/constants.config.json';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from "rxjs";
 import { IUser } from "../../models/schemas/user.schema";
-import { ISignInRequirements } from "../../models/api/sign-in.dto";
+import { ISignInRequirements, ISignUpRequirements } from "../../models/api/user.dto";
 import { ApiService } from "../api/api.service";
 import { baseUrl, decrypt, encrypt, isEmpty } from "../utils/utils.service";
 import { NotificationService } from "../notification/notification.service";
 import { Router } from "@angular/router";
 import { E_UrlPart, E_UserType } from "../../models/global/static.enums";
-import { ISignInResponse } from "../../models/global/global-types";
-
-
-const TOKEN_KEY: string = '624d9ae426624d9ae426a0fd1c1d7bb7ada0fd1c1d7bb7ad';
-const URL_PART_KEY: string = '624db2e1567624db2e156799a0cc0c9692299a0cc0c96922';
+import { IResponseType, ISignInResponse } from "../../models/global/global-types";
+import {
+  ADMIN_ROUTES,
+  CUSTOMER_ROUTES,
+  DELIVERY_ROUTES,
+  RESTAURANT_ROUTES,
+  RouteInfo
+} from "../../models/global/constants.config";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
+
+  get defaultRoutes(): RouteInfo[] {
+
+    if (this.getUrlPart()) {
+
+      switch (this.getUrlPart()) {
+
+        case E_UrlPart.CUS:
+          return CUSTOMER_ROUTES;
+
+        case E_UrlPart.DEM:
+          return DELIVERY_ROUTES;
+
+        case E_UrlPart.ADM:
+          return ADMIN_ROUTES;
+
+        case E_UrlPart.RES:
+          return RESTAURANT_ROUTES;
+
+        default:
+          return [];
+
+      }
+
+    } else {
+
+      return [];
+
+    }
+
+  }
+
 
   public onlineUser: BehaviorSubject<IUser | null> = new BehaviorSubject<IUser | null>(null);
 
@@ -32,16 +68,44 @@ export class SessionService {
   }
 
 
+  getLoggedInUser(): Observable<boolean> {
+
+    return new Observable<boolean>(subscriber => {
+
+      this.apiService.get<IResponseType<IUser>>(baseUrl(apiConfig.endpoints.session.logged_in_user)).subscribe((result) => {
+
+        if (result.status != 200) {
+
+          this.notificationService.alert('No user found', result.message, 'error');
+          subscriber.next(false);
+
+        } else {
+
+          this.onlineUser.next(result.data);
+          subscriber.next(true);
+
+        }
+
+        subscriber.complete();
+
+      });
+
+    });
+
+  }
+
+
   signIn(signInData: ISignInRequirements): Observable<boolean> {
 
     return new Observable<boolean>(subscriber => {
 
-      this.apiService.post<ISignInResponse>(baseUrl(apiConfig.endpoints.session.sign_in), { ...signInData }).subscribe((result) => {
+      this.apiService.post<ISignInResponse>(baseUrl(apiConfig.endpoints.session.sign_in), {...signInData}).subscribe((result) => {
 
         if (result.status != 200) {
 
           this.notificationService.alert('Login failed', result.message, 'error');
           subscriber.next(false);
+          subscriber.complete();
 
         } else {
 
@@ -78,10 +142,47 @@ export class SessionService {
           } else {
 
             this.setToken(result.data!.token);
+            subscriber.next(true);
+            subscriber.complete();
+
 
           }
 
-          subscriber.next(true);
+        }
+
+      });
+
+    });
+
+  }
+
+
+  register(signUpData: ISignUpRequirements): Observable<boolean> {
+
+    return new Observable<boolean>(subscriber => {
+
+      this.apiService.post<ISignInResponse>(baseUrl(apiConfig.endpoints.session.sign_up), {...signUpData}).subscribe((result) => {
+
+        if (result.status != 200) {
+
+          this.notificationService.alert('Login failed', result.message, 'error');
+          subscriber.next(false);
+
+        } else {
+
+          console.log(result);
+
+          if (result.data?.user_type == E_UserType.CUS || !isEmpty(result.data?.token)) {
+
+            this.setUrlPart(E_UrlPart.CUS);
+            this.setToken(result.data!.token);
+            subscriber.next(true);
+
+          } else {
+
+            subscriber.next(false);
+
+          }
 
         }
 
@@ -94,33 +195,43 @@ export class SessionService {
   }
 
 
-  signOut(path: string): void {
+  signOut(): Observable<boolean> {
 
-    this.removeToken();
-    this.removeUrlPart();
-    this.router.navigate([`${path}/sign_in`]).then();
+    return new Observable<boolean>((subscriber) => {
+
+      this.removeToken();
+      this.removeUrlPart();
+
+      this.router.navigate(['sign_in']).then((status) => {
+
+        subscriber.next(status);
+        subscriber.complete();
+
+      });
+
+    });
 
   }
 
 
   getToken(): string | null {
 
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(constants.token_key);
 
   }
 
 
   setToken(token: string): void {
 
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.removeItem(constants.token_key);
+    localStorage.setItem(constants.token_key, token);
 
   }
 
 
   removeToken(): void {
 
-    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(constants.token_key);
 
   }
 
@@ -129,7 +240,7 @@ export class SessionService {
 
     try {
 
-      const value: string | null = localStorage.getItem(URL_PART_KEY);
+      const value: string | null = localStorage.getItem(constants.url_part_key);
 
       return isEmpty(value) ? '' : decrypt(value!);
 
@@ -144,15 +255,15 @@ export class SessionService {
 
   setUrlPart(urlPath: string): void {
 
-    localStorage.removeItem(URL_PART_KEY);
-    localStorage.setItem(URL_PART_KEY, encrypt(urlPath));
+    localStorage.removeItem(constants.url_part_key);
+    localStorage.setItem(constants.url_part_key, encrypt(urlPath));
 
   }
 
 
   removeUrlPart(): void {
 
-    localStorage.removeItem(URL_PART_KEY);
+    localStorage.removeItem(constants.url_part_key);
 
   }
 

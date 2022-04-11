@@ -1,0 +1,27 @@
+<h4 mat-dialog-title>
+  {{data.title}}
+</h4>
+
+<hr>
+
+<mat-dialog-content [formGroup]="orderForm">
+
+  <div class="form-group">
+    <p>Available delivery men</p>
+    <select class="form-control" formControlName="deliveryMan">
+      <option *ngFor="let deliveryMan of userService.users.value" value="{{deliveryMan._id}}">{{deliveryMan.lastName}} {{deliveryMan.firstName}}</option>
+    </select>
+  </div>
+
+</mat-dialog-content>
+
+<hr>
+
+<mat-dialog-actions>
+  <button class="btn btn-success btn-block" (click)="submit()">
+    Save
+  </button>
+  <button class="btn btn-dark btn-block" (click)="close()">
+    cancel
+  </button>
+</mat-dialog-actions>

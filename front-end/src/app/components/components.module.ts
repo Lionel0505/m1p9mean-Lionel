@@ -4,6 +4,7 @@ import { FooterComponent } from './footer/footer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { RouterModule } from "@angular/router";
 import { TopbarComponent } from './topbar/topbar.component';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { TopbarComponent } from './topbar/topbar.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule
   ]
 })
 export class ComponentsModule {}

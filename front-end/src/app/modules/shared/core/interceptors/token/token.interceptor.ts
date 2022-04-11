@@ -21,8 +21,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
     request = request.clone({
       setHeaders: {
-        Authorization: `Bearer ${this.sessionService.getToken()}`,
-        MyHeader: 'Test'
+        Authorization: `Bearer ${this.sessionService.getToken()}`
       }
     });
 

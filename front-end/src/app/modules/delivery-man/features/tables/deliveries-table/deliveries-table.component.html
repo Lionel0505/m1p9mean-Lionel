@@ -1,0 +1,66 @@
+
+
+<div class="card shadow mb-4">
+
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Deliveries list</h6>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+        <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Restaurant</th>
+          <th>Cost</th>
+          <th>Shipping cost</th>
+          <th>Delivery address</th>
+          <th>Order date</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tfoot>
+        <tr>
+          <th>Customer</th>
+          <th>Restaurant</th>
+          <th>Cost</th>
+          <th>Shipping cost</th>
+          <th>Delivery address</th>
+          <th>Order date</th>
+          <th></th>
+        </tr>
+        </tfoot>
+
+        <tbody>
+        <tr *ngFor="let order of orderService.orders.value">
+          <td>{{order.customer.lastName}} {{order.customer.firstName}}</td>
+          <td>{{order.restaurant.lastName}}</td>
+          <td>{{order.cost}}</td>
+          <td>{{order.shippingCost}}</td>
+          <td>{{order.deliveryAddress}}</td>
+          <td>{{order.createdAt | date: 'd-MMM-y'}}</td>
+          <td>
+            <span class="d-flex justify-content-sm-around" *ngIf="order.status != deliveryStatus.DEL">
+              <button class="btn btn-success btn-circle btn-sm shadow-sm" (click)="deliverOrder(order)">
+                <fa-icon [icon]="faCircleCheck"></fa-icon>
+              </button>
+            </span>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <app-paginator
+      [length]="paginationService.paginationData.value.totalItems"
+      [pageSize]="paginationService.paginationData.value.limit"
+      [pageIndex]="paginationService.paginationData.value.page - 1"
+      (page)="setPage($event)"
+    ></app-paginator>
+
+  </div>
+</div>

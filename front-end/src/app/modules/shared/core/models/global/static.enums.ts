@@ -23,7 +23,7 @@ export enum E_UrlPart {
 
   DEM = 'delivery',
 
-  CUS = '#',
+  CUS = 'customer',
 }
 
 
@@ -37,5 +37,8 @@ export enum E_DeliveryStatus {
 
   // commande en préparation
   INI = 'initiated',
+
+  // commande annulée
+  CAN = 'canceled',
 
 }

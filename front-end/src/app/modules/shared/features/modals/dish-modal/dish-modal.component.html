@@ -1,0 +1,82 @@
+<h4 mat-dialog-title>
+  {{data.title}}
+</h4>
+
+<hr>
+
+<mat-dialog-content [formGroup]="dishForm">
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Name" formControlName="name" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Cost price" formControlName="costPrice" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Sale price" formControlName="salePrice" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <input type="text" class="form-control form-control-user"
+           placeholder="Purchase price" formControlName="purchasePrice" autocomplete="off">
+  </div>
+
+  <div class="drag-drop-container">
+    <div class="example-container">
+      <p>Visible</p>
+
+      <div
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="visible"
+        [cdkDropListConnectedTo]="[doneList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of visible" cdkDrag>
+          <fa-icon [icon]="faCircleCheck"></fa-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-2"></div>
+
+    <div class="example-container">
+      <p>Not visible</p>
+
+      <div
+        cdkDropList
+        #doneList="cdkDropList"
+        [cdkDropListData]="notVisible"
+        [cdkDropListConnectedTo]="[todoList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of notVisible" cdkDrag>
+          <fa-icon [icon]="faCircleCheck"></fa-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+  <small>Drag and drop to change</small>
+
+  <div class="mb-3">
+    <input type="file" accept="image/*" class="custom-file"
+           placeholder="picture" formControlName="picture" (change)="onFileChange($event)">
+  </div>
+
+</mat-dialog-content>
+
+<hr>
+
+<mat-dialog-actions>
+  <button class="btn btn-success btn-block" (click)="submit()">
+    Save
+  </button>
+  <button class="btn btn-dark btn-block" (click)="close()">
+    cancel
+  </button>
+</mat-dialog-actions>

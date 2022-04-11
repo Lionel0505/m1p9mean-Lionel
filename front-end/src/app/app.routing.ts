@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SignInComponent } from "./modules/public/pages/sign-in/sign-in.component";
-import { AuthenticationGuard } from "./modules/public/core/guards/authentication/authentication.guard";
 import { SignUpComponent } from "./modules/customer/pages/sign-up/sign-up.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
+import { PageNotFoundComponent } from "./modules/public/pages/page-not-found/page-not-found.component";
+import { DataStorageResolver } from "./modules/shared/core/resolvers/data-storage/data-storage.resolver";
+import { RedirectGuard } from "./modules/shared/core/guards/redirect/redirect.guard";
+import { AuthenticationGuard } from "./modules/public/core/guards/authentication/authentication.guard";
 
 
 const routes: Routes = [
@@ -19,19 +22,20 @@ const routes: Routes = [
   },
   {
     path: '',
-    canActivateChild: [AuthenticationGuard],
+    resolve: { data: DataStorageResolver },
     component: AdminLayoutComponent,
     children: [
       {
         path: '',
         loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
       }
-    ]
+    ],
+    canActivateChild: [AuthenticationGuard]
 
   },
   {
     path: '**',
-    redirectTo: ''
+    component: PageNotFoundComponent
   }
 ];
 
@@ -40,4 +44,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRouting {}
+export class AppRouting {
+}

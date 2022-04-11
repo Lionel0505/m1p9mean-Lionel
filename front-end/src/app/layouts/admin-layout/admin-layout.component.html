@@ -1,5 +1,27 @@
+<!-- Loader -->
+<div class="loader-container" *ngIf="loaderService.loadingStatus.value">
+
+  <div class="loader">
+
+    <div class="meteor-holder">
+      <div class="meteor"></div>
+    </div>
+
+    <div class="meteor-holder">
+      <div class="meteor"></div>
+    </div>
+
+    <div class="meteor-holder">
+      <div class="meteor"></div>
+    </div>
+
+  </div>
+
+</div>
+<!-- Loader -->
+
 <!-- Page Wrapper -->
-<div id="wrapper">
+<div id="wrapper" style="height: 100vh; overflow: auto">
 
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>

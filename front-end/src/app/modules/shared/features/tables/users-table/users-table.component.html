@@ -1,0 +1,69 @@
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">{{title}}</h1>
+  <button (click)="createNewUser()" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm btn-icon-split">
+    <span class="icon text-white-50">
+      <fa-icon class="fa-sm" [icon]="faCirclePlus"></fa-icon>
+    </span>
+    <span class="text">Add {{userType}}</span>
+  </button>
+</div>
+
+<div class="card shadow mb-4">
+
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">{{title}} list</h6>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email address</th>
+          <th>Registration date</th>
+          <th *ngIf="!isCustomer"></th>
+        </tr>
+        </thead>
+
+        <tfoot>
+        <tr>
+          <th>Name</th>
+          <th>Email address</th>
+          <th>Registration date</th>
+          <th *ngIf="!isCustomer"></th>
+        </tr>
+        </tfoot>
+
+        <tbody>
+        <tr *ngFor="let user of userService.users.value">
+          <td>{{user.firstName || ''}} {{user.lastName}}</td>
+          <td>{{user.emailAddress}}</td>
+          <td>{{user.createdAt | date : 'd-MMM-y'}}</td>
+          <td *ngIf="!isCustomer">
+            <span class="d-flex justify-content-sm-around">
+              <button class="btn btn-info btn-circle btn-sm shadow-sm" (click)="updateUser(user)">
+              <fa-icon [icon]="faPenToSquare"></fa-icon>
+              </button>
+              <button class="btn btn-danger btn-circle btn-sm shadow-sm">
+                <fa-icon [icon]="faTrashCan"></fa-icon>
+              </button>
+            </span>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <app-paginator
+      [length]="paginationService.paginationData.value.totalItems"
+      [pageSize]="paginationService.paginationData.value.limit"
+      [pageIndex]="paginationService.paginationData.value.page - 1"
+      (page)="setPage($event)"
+    ></app-paginator>
+
+  </div>
+</div>

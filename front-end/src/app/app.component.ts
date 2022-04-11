@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
-
-
-declare const $: any;
+import { Router } from "@angular/router";
+import { isEmpty } from "./modules/shared/core/services/utils/utils.service";
+import { SessionService } from "./modules/shared/core/services/session/session.service";
 
 
 @Component({
@@ -11,6 +11,6 @@ declare const $: any;
 })
 export class AppComponent {
 
-  title = 'mon-application-angular';
+  title = 'e-kaly';
 
 }

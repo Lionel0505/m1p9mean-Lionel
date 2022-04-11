@@ -38,7 +38,8 @@ export class SignInComponent implements OnInit {
 
       this.sessionService.signIn({...this.signInForm.value}).subscribe((status) => {
 
-        if (status) this.router.navigate([`${this.sessionService.getUrlPart()}`]).then();
+        if (status) this.router
+          .navigate([`${this.sessionService.getUrlPart()}`]);
 
       });
 

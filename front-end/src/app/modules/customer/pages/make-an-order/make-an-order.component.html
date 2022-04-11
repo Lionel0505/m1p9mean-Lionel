@@ -1,0 +1,51 @@
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Menu items</h1>
+  <button (click)="makeAnOrder()" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm btn-icon-split">
+    <span class="icon text-white-50">
+      <fa-icon class="fa-sm" [icon]="faCirclePlus"></fa-icon>
+    </span>
+    <span class="text">Make an order</span>
+  </button>
+</div>
+
+<p class="mb-4">Please select some items before clicking the 'Make an order' button</p>
+
+<div class="row d-flex justify-content-around">
+
+  <!-- Illustrations -->
+  <div class="card shadow col-xl-3 col-md-5 col-sm-12 mb-12 m-sm-2" *ngFor="let dish of dishService.dishes.value">
+
+    <div class="card-header py-3">
+
+      <h6 class="m-0 font-weight-bold text-primary text-uppercase mb-1">{{dish.name}}</h6>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="text-center">
+
+        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+             src="assets/img/undraw_posting_photo.svg" alt="...">
+
+        <p>
+          {{dish.purchasePrice}} Ariary
+        </p>
+
+        <div class="form-group">
+          <input class="form-control" type="checkbox" (change)="chooseItem(dish)" [checked]="checked">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<app-paginator
+  [length]="paginationService.paginationData.value.totalItems"
+  [pageSize]="paginationService.paginationData.value.limit"
+  [pageIndex]="paginationService.paginationData.value.page - 1"
+  (page)="setPage($event)"
+></app-paginator>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-declare const $: any;
+import { SessionService } from "../../modules/shared/core/services/session/session.service";
+import { NotificationService } from "../../modules/shared/core/services/notification/notification.service";
 
 @Component({
   selector: 'app-topbar',
@@ -9,19 +9,28 @@ declare const $: any;
 })
 export class TopbarComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public sessionService: SessionService,
+    private notificationService: NotificationService
+  ) {
+  }
+
 
   ngOnInit(): void {
   }
 
+
   toggleSidebar(): void {
 
-    $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
+    document.querySelector('body')!.classList.toggle("sidebar-toggled");
 
-    if ($(".sidebar").hasClass("toggled")) {
+    const sidebar = document.querySelector('.sidebar');
 
-      $('.sidebar .collapse').collapse('hide');
+    sidebar!.classList.toggle("toggled");
+
+    if (sidebar!.classList.contains("toggled")) {
+
+      document.querySelector('.sidebar')!.classList.toggle('hidden');
 
     }
 

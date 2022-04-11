@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { SessionService } from "../../modules/shared/core/services/session/session.service";
+import { Router } from "@angular/router";
+import { isEmpty } from "../../modules/shared/core/services/utils/utils.service";
+import { LoaderService } from "../../modules/shared/core/services/loader/loader.service";
+
 
 @Component({
   selector: 'app-admin-layout',
@@ -7,9 +12,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminLayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public loaderService: LoaderService
+  ) {
+
+  }
+
 
   ngOnInit(): void {
+
   }
 
 }

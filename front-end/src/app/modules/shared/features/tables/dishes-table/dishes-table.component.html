@@ -1,0 +1,81 @@
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">{{title}}</h1>
+  <button (click)="createNewDish()" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm btn-icon-split">
+    <span class="icon text-white-50">
+      <fa-icon class="fa-sm" [icon]="faCirclePlus"></fa-icon>
+    </span>
+    <span class="text">New dish</span>
+  </button>
+</div>
+
+<div class="card shadow mb-4">
+
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">{{title}} list</h6>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Cost price (Ariary)</th>
+          <th>Sale price (Ariary)</th>
+          <th>Purchase price (Ariary)</th>
+          <th>Visible</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tfoot>
+        <tr>
+          <th>Name</th>
+          <th>Cost price (Ariary)</th>
+          <th>Sale price (Ariary)</th>
+          <th>Purchase price (Ariary)</th>
+          <th>Visible</th>
+          <th></th>
+        </tr>
+        </tfoot>
+
+        <tbody>
+        <tr *ngFor="let dish of dishService.dishes.value">
+          <td>{{dish.name}}</td>
+          <td>{{dish.costPrice| number : '1.2'}}</td>
+          <td>{{dish.salePrice| number : '1.2'}}</td>
+          <td>{{dish.purchasePrice| number : '1.2'}}</td>
+          <td>
+            <span class="d-flex justify-content-sm-around">
+              <span class="{{dish.visible ? 'text-success' : 'text-danger'}} font-weight-bold" matTooltip="{{dish.visible ? 'visible' : 'not visible'}}">
+                <fa-icon [icon]="dish.visible ? faEye : faEyeSlash"></fa-icon>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="d-flex justify-content-sm-around">
+              <button class="btn btn-info btn-circle btn-sm shadow-sm" (click)="updateDish(dish)">
+              <fa-icon [icon]="faPenToSquare"></fa-icon>
+            </button>
+            <button class="btn btn-danger btn-circle btn-sm shadow-sm">
+              <fa-icon [icon]="faTrashCan"></fa-icon>
+            </button>
+            </span>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <app-paginator
+      [length]="paginationService.paginationData.value.totalItems"
+      [pageSize]="paginationService.paginationData.value.limit"
+      [pageIndex]="paginationService.paginationData.value.page - 1"
+      (page)="setPage($event)"
+    ></app-paginator>
+
+  </div>
+</div>
